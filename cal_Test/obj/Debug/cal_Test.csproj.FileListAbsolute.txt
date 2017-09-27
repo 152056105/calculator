@@ -1,0 +1,6 @@
+D:\C++\cal_Test\cal_Test\bin\Debug\cal_Test.exe.config
+D:\C++\cal_Test\cal_Test\bin\Debug\cal_Test.exe
+D:\C++\cal_Test\cal_Test\bin\Debug\cal_Test.pdb
+D:\C++\cal_Test\cal_Test\obj\Debug\cal_Test.csprojResolveAssemblyReference.cache
+D:\C++\cal_Test\cal_Test\obj\Debug\cal_Test.exe
+D:\C++\cal_Test\cal_Test\obj\Debug\cal_Test.pdb
