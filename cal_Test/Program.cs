@@ -10,137 +10,128 @@ namespace cal_Test
     {
         static void Main(string[] args)
         {
-            Calculator cal = new Calculator();
-            //用死循环来控制用户多次使用
-            while (true)
-            {   //提示用户输入操作数
-                Console.WriteLine("请输入两个数：");
-                String result = Console.ReadLine();
-                //用切割方法进行切割
-                String[] shu = result.Split(' ');
-                double m=0, n=0;
-                int flag = 1;
-                //提示用户输入操作符
-                Console.WriteLine("请输入操作符以回车结束");
-                char c = char.Parse(Console.ReadLine());
-                try
-                {
-                    n = double.Parse(shu[0]);
-                    m = double.Parse(shu[1]);
-                }catch(Exception e){
-                    Console.WriteLine("输入的数字格式错误！");
-                    flag = 0;
+            char c;
+            bool flag = true;
+            while (flag)
+            {
 
-                }
-                int a, b;
-                //强转为int
-               a = (int)n;
-               b = (int)m;
-                //判断两个操作数是否相等
-               if (cal.Equals(a, b))
-               {
-                   Console.WriteLine("两个操作数相等");
-               }
-               else
-               {
-                   Console.WriteLine("两个操作数不相等");
-               }
-               //进入判断
-                if (flag != 0)
-                {
-                    switch (c)
-                    {
-                        case '+': Console.WriteLine(cal.add(n, m)); break;
-                        case '-': Console.WriteLine(cal.sub(n, m)); break;
-                        case '*': Console.WriteLine(cal.mul(n, m)); break;
-                        case '/':
-                            if (cal.div(n, m) == 0)
-                            {
-                                Console.WriteLine("除数不能为0"); break;
-                            }
-                            else
-                            {
-                                Console.WriteLine(cal.div(n, m)); break;
-                            }
-                    }
-                }
-                Console.WriteLine("是否要继续计算，y:是，n:退出");
-                char d = char.Parse(Console.ReadLine());
-                if (d == 'n')
-                    break;
+                Calculator calculator = new Calculator();
+                //1.输入两个数
+                Console.WriteLine("请输入两个操作数以空格结束：");
+                String result = Console.ReadLine();
+                //通过空格将两个操作数分开，用string数组接收
+                String[] shu = result.Split(' ');
+                calculator.A = shu[0];
+                calculator.B = shu[1];
+                Console.WriteLine("请输入操作符：");
+                string op = Console.ReadLine();
+                Console.WriteLine("运算结果为：" + calculator.Calculate(op));
+                Console.WriteLine("是否继续？（y或Y继续，n或N退出）");
+                c = char.Parse(Console.ReadLine());
+                if (c == 'n' || c == 'N')
+                    flag = false;
             }
-            Console.WriteLine("退出成功！谢谢使用");
+            Console.WriteLine("退出成功，欢迎下次使用");
         }
     }
-   
-
     class Calculator
     {
-        /// <summary>
-        /// 加法运算
-        /// </summary>
-        /// <param name="n">被加数</param>
-        /// <param name="m">加数</param>
-        /// <returns></returns>
-        public double add(double n,double m){
-            return n + m;
-    }
-        /// <summary>
-        /// 减法运算
-        /// </summary>
-        /// <param name="n">被减数</param>
-        /// <param name="m">减数</param>
-        /// <returns></returns>
-        public double sub(double n, double m)
+        int _a, _b;//为数字的数据成员
+        bool _statusA = true, _statusB = true;//标记是否都是数字
+        string _c, _d;//当为字符串时用这俩数据接收
+        public string A//将不同类型的操作数用异常判断而分开
         {
-            return n - m;
-        }
-        /// <summary>
-        /// 乘法运算
-        /// </summary>
-        /// <param name="n">被乘数</param>
-        /// <param name="m">乘数</param>
-        /// <returns></returns>
-        public double mul(double n, double m)
-        {
-            return n * m;
-        }
-        /// <summary>
-        /// 除法运算
-        /// </summary>
-        /// <param name="n">被除数</param>
-        /// <param name="m">除数</param>
-        /// <returns></returns>
-        public double div(double n, double m)
-        {
-            if (m == 0)
-                return 0;
-            else {
-                double num = n / m;
-                num = double.Parse(num.ToString("0.00"));
-                return n / m;
+            set
+            {
+                try
+                {
+                    _a = int.Parse(value);
+                }
+                catch (FormatException e)
+                {//标记false证明不是int型，是string型
+                    _statusA = false;
+                    //用string接收操作数
+                    _c = value;
+                }
             }
-                
         }
-
-        /// <summary>
-        /// 重载equals方法
-        /// </summary>
-        /// <param name="obj1">第一个参数</param>
-        /// <param name="obj2">第二个参数</param>
-        /// <returns></returns>
-
-        public bool Equals(int obj1, int obj2)
+        public string B
         {
-            if (obj1 != obj2)
-                return false;
-            else
-                return true;
-
+            set
+            {
+                try
+                {
+                    _b = int.Parse(value);
+                }
+                catch (FormatException e)
+                {
+                    _statusB = false;
+                    _d = value;
+                }
+            }
         }
 
+        public string Calculate(string op)
+        {
+            switch (op)
+            {
+                case "+":
+                    if (_statusA && _statusB)
+                    {
+                        return (_a + _b) + "";
+                    }
+                    else if (_statusA && !_statusB)
+                    {
+                        _c = _a.ToString();
+                        //将”替换为空，进行字符串连接
+                        return (_c + _d).Replace("\"", "");
+                    }
+                    else if (!_statusA && _statusB)
+                    {
+                        _d = _b.ToString();
+                        return (_c + _d).Replace("\"", "");
+                    }
+                    else
+                    {
+                        return (_c + _d).Replace("\"", "");
+                    }
+                case "-":
+                    if (_statusA && _statusB)
+                    {
+                        //为了统一将结果都统一为字符串
+                        return (_a - _b) + "";
+                    }
+                    else if (_statusA && !_statusB)
+                    {
+                        _c = _a.ToString();
+                        return (_c.Replace(_d, "")).Replace("\"", "");
+                    }
+                    else if (!_statusA && _statusB)
+                    {
+                        _d = _b.ToString();
+                        return (_c.Replace(_d, "")).Replace("\"", "");
+                    }
+                    else
+                    {
+                        return (_c.Replace(_d, "")).Replace("\"", "");
+                    }
+                case "*":
+                    return (_a * _b) + "";
+                case "/":
+                    if (_b == 0)
+                    {
+                        return "运算出错：除数不能为0！";
+                    }
+                    else
+                    {
+                        return ((float)_a / (float)_b) + "";
+                    }
+                default:
+                    return "输入的运算符错误！";
+            }
+        }
     }
+} 
 
-}
 
 
